@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSI Search Engine – Wyszukiwarka Semantyczna</title>
+    <meta name="description" content="Wyszukiwarka semantyczna oparta na SVD i TF-IDF, indeksująca artykuły Simple English Wikipedia.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-shell">
+
+        <!-- Sidebar / Config Panel -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <span class="logo-icon">⟨LSI⟩</span>
+                <h2 class="sidebar-title">Konfiguracja</h2>
+            </div>
+
+            <section class="config-section">
+                <h3 class="config-label">Metoda wyszukiwania</h3>
+                <label class="toggle-row" for="use-svd-toggle">
+                    <span>Użyj SVD (LSI)</span>
+                    <div class="toggle">
+                        <input type="checkbox" id="use-svd-toggle" checked>
+                        <span class="toggle-slider"></span>
+                    </div>
+                </label>
+            </section>
+
+            <section class="config-section" id="svd-options">
+                <h3 class="config-label">Wymiary SVD (k)</h3>
+                <div class="radio-group" id="k-svd-group">
+                    <label class="radio-option"><input type="radio" name="k-svd" value="100"> 100</label>
+                    <label class="radio-option"><input type="radio" name="k-svd" value="200"> 200</label>
+                    <label class="radio-option"><input type="radio" name="k-svd" value="500" checked> 500</label>
+                    <label class="radio-option"><input type="radio" name="k-svd" value="1000"> 1000</label>
+                </div>
+            </section>
+
+            <section class="config-section">
+                <h3 class="config-label">Liczba wyników</h3>
+                <div class="number-row">
+                    <button class="num-btn" id="k-dec">−</button>
+                    <span class="num-display" id="k-results-display">10</span>
+                    <button class="num-btn" id="k-inc">+</button>
+                    <input type="hidden" id="k-results" value="10">
+                </div>
+            </section>
+
+            <button class="apply-btn" id="apply-config">Zastosuj konfigurację</button>
+
+            <div class="engine-status" id="engine-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span id="status-text">Sprawdzanie...</span>
+            </div>
+
+            <div class="index-stats" id="index-stats" style="display:none">
+                <div class="stat-item">
+                    <span class="stat-val" id="stat-docs">–</span>
+                    <span class="stat-key">dokumentów</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" id="stat-vocab">–</span>
+                    <span class="stat-key">terminów</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main content -->
+        <main class="main">
+
+            <!-- Search bar -->
+            <header class="search-header">
+                <button class="sidebar-toggle" id="sidebar-toggle" title="Panel konfiguracji">☰</button>
+                <div class="search-box">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <input
+                        type="search"
+                        id="search-input"
+                        class="search-input"
+                        placeholder="Wpisz zapytanie, np. 'artificial intelligence'…"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                    <button class="search-btn" id="search-btn">Szukaj</button>
+                </div>
+            </header>
+
+            <!-- Results area -->
+            <div class="content-area" id="content-area">
+
+                <div class="welcome-screen" id="welcome-screen">
+                    <div class="welcome-graphic">⟨LSI⟩</div>
+                    <h1 class="welcome-title">Wyszukiwarka Semantyczna</h1>
+                    <p class="welcome-desc">
+                        Silnik oparty na Latent Semantic Indexing (SVD) i TF-IDF,
+                        indeksujący artykuły Simple&nbsp;English Wikipedia.
+                    </p>
+                    <div class="example-queries">
+                        <span class="example-label">Przykłady:</span>
+                        <button class="example-chip" data-q="quantum physics">quantum physics</button>
+                        <button class="example-chip" data-q="artificial intelligence">artificial intelligence</button>
+                        <button class="example-chip" data-q="climate change">climate change</button>
+                        <button class="example-chip" data-q="graph algorithms">graph algorithms</button>
+                    </div>
+                </div>
+
+                <div class="results-meta hidden" id="results-meta">
+                    <span id="results-query-label"></span>
+                    <span class="results-time" id="results-time"></span>
+                </div>
+
+                <div id="results-list"></div>
+
+                <!-- Document detail view -->
+                <div class="doc-view hidden" id="doc-view">
+                    <button class="back-btn" id="back-btn">← Powrót do wyników</button>
+                    <div class="doc-content" id="doc-content"></div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
